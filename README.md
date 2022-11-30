@@ -1,5 +1,7 @@
 # aoc-2022
 
+![build status badge](https://github.com/ssiegler/aoc-2022/actions/workflows/main.yml/badge.svg)
+
 Welcome to the Advent of Code[^aoc] Kotlin project created by [ssiegler][github] using the [Advent of Code Kotlin Template][template] delivered by JetBrains.
 
 In this repository, ssiegler is about to provide solutions for the puzzles using [Kotlin][kotlin] language.
