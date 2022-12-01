@@ -12,11 +12,12 @@ data class Reader(val elves: List<List<Int>> = listOf(), val elf: List<Int> = li
         }
 }
 
-fun part1(input: List<String>): Int =
-    input.fold(Reader(), Reader::read).complete().maxOf { it.sum() }
+fun part1(input: List<String>): Int = readCalories(input).maxOf { it.sum() }
 
 fun part2(input: List<String>): Int =
-    input.fold(Reader(), Reader::read).complete().map { it.sum() }.sortedDescending().take(3).sum()
+    readCalories(input).map { it.sum() }.sortedDescending().take(3).sum()
+
+private fun readCalories(input: List<String>) = input.fold(Reader(), Reader::read).complete()
 
 fun main() {
 
