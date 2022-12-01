@@ -15,9 +15,8 @@ data class Reader(val elves: List<List<Int>> = listOf(), val elf: List<Int> = li
 fun part1(input: List<String>): Int =
     input.fold(Reader(), Reader::read).complete().maxOf { it.sum() }
 
-fun part2(input: List<String>): Int {
-    return input.size
-}
+fun part2(input: List<String>): Int =
+    input.fold(Reader(), Reader::read).complete().map { it.sum() }.sortedDescending().take(3).sum()
 
 fun main() {
 

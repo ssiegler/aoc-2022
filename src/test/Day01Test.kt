@@ -23,4 +23,9 @@ class Day01Test {
     fun `find max calories sum`() {
         assertEquals(24000, part1(readInput("Day01Example")))
     }
+
+    @Test
+    fun `find sum of top 3`() {
+        assertEquals(45000, part2(readInput("Day01Example")))
+    }
 }
