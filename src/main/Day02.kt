@@ -1,3 +1,7 @@
+package day02
+
+import utils.readInput
+
 enum class Shape {
     Rock,
     Paper,

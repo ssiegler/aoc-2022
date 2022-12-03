@@ -1,3 +1,7 @@
+package day01
+
+import utils.readInput
+
 data class Reader(val elves: List<List<Int>> = listOf(), val elf: List<Int> = listOf()) {
     fun read(line: String): Reader =
         when {
