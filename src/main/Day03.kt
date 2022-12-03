@@ -11,6 +11,9 @@ value class Rucksack(private val items: List<ItemType>) {
 
     val firstCommonType: ItemType
         get() = firstCompartment.first { it in secondCompartment }
+
+    val itemTypes: Set<ItemType>
+        get() = items.toSet()
 }
 
 fun fromLine(line: CharSequence) = Rucksack(line.map(::ItemType))
@@ -24,9 +27,19 @@ value class ItemType(private val value: Char) {
 }
 
 fun part1(filename: String): Int =
-    readInput(filename).map(::fromLine).map(Rucksack::firstCommonType).map(ItemType::priority).sum()
+    readInput(filename).map(::fromLine).map(Rucksack::firstCommonType).sumOf(ItemType::priority)
+
+fun List<Rucksack>.commonType() = map { it.itemTypes }.reduce(Set<ItemType>::intersect).single()
+
+fun part2(filename: String): Int =
+    readInput(filename)
+        .map(::fromLine)
+        .chunked(3)
+        .map(List<Rucksack>::commonType)
+        .sumOf(ItemType::priority)
 
 fun main() {
     val filename = "Day03"
     println(part1(filename))
+    println(part2(filename))
 }
