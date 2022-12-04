@@ -2,10 +2,10 @@ package day02
 
 import utils.readInput
 
-enum class Shape {
-    Rock,
-    Paper,
-    Scissors;
+enum class Shape(val score: Int) {
+    Rock(1),
+    Paper(2),
+    Scissors(3);
 
     val defeats: Shape
         get() =
@@ -24,26 +24,12 @@ enum class Shape {
             }
 
     fun defeats(other: Shape) = other == defeats
-
-    fun score(): Int =
-        when (this) {
-            Rock -> 1
-            Paper -> 2
-            Scissors -> 3
-        }
 }
 
-enum class Outcome {
-    Lost,
-    Draw,
-    Won;
-
-    fun score(): Int =
-        when (this) {
-            Lost -> 0
-            Draw -> 3
-            Won -> 6
-        }
+enum class Outcome(val score: Int) {
+    Lost(0),
+    Draw(3),
+    Won(6)
 }
 
 data class Round(val opponent: Shape, val selected: Shape) {
@@ -54,7 +40,7 @@ data class Round(val opponent: Shape, val selected: Shape) {
             else -> Outcome.Lost
         }
 
-    val score = selected.score() + outcome.score()
+    val score = selected.score + outcome.score
 }
 
 fun Char.decodeOpponent(): Shape =
