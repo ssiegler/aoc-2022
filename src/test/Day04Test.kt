@@ -8,4 +8,9 @@ class Day04Test {
     fun part1() {
         assertEquals(2, part1("Day04Example"))
     }
+
+    @Test
+    fun part2() {
+        assertEquals(4, part2("Day04Example"))
+    }
 }

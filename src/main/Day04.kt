@@ -7,6 +7,12 @@ fun part1(filename: String): Int =
         second in first || first in second
     }
 
+fun part2(filename: String): Int =
+    readInput(filename).map(String::pairOfAssignments).count(Pair<Assignment, Assignment>::overlap)
+
+private fun Pair<Assignment, Assignment>.overlap() =
+    first.first <= second.last && second.first <= first.last
+
 typealias Assignment = IntRange
 
 private operator fun Assignment.contains(other: Assignment) =
@@ -21,4 +27,5 @@ private const val filename = "Day04"
 
 fun main() {
     println(part1(filename))
+    println(part2(filename))
 }
