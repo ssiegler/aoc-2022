@@ -1,30 +1,19 @@
-plugins {
-    kotlin("jvm") version "1.7.22"
-}
+plugins { kotlin("jvm") version "1.7.22" }
 
-repositories {
-    mavenCentral()
-}
+repositories { mavenCentral() }
 
 dependencies {
     testImplementation(kotlin("test"))
+    testImplementation("org.junit.jupiter:junit-jupiter-params")
 }
 
 tasks {
     sourceSets {
-        main {
-            java.srcDirs("src/main")
-        }
-        test {
-            java.srcDirs("src/test")
-        }
+        main { java.srcDirs("src/main") }
+        test { java.srcDirs("src/test") }
     }
 
-    wrapper {
-        gradleVersion = "7.6"
-    }
+    wrapper { gradleVersion = "7.6" }
 
-    test {
-        useJUnitPlatform()
-    }
+    test { useJUnitPlatform() }
 }
