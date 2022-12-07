@@ -11,4 +11,9 @@ class Day07Test {
     fun part1() {
         assertEquals(95437, part1(filename))
     }
+
+    @Test
+    fun part2() {
+        assertEquals(24933642, part2(filename))
+    }
 }

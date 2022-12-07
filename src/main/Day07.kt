@@ -19,7 +19,7 @@ data class Directory(
         files.add(file)
     }
 
-    private val totalSize: Long
+    val totalSize: Long
         get() = files.sumOf(File::size) + subdirectories.sumOf(Directory::totalSize)
 
     val totalSizes: List<Long>
@@ -28,6 +28,13 @@ data class Directory(
 
 fun part1(filename: String): Long =
     readInput(filename).readDirectories().totalSizes.filter { it <= 100000 }.sum()
+
+fun part2(filename: String): Long {
+    val directories = readInput(filename).readDirectories()
+    val unused = 70000000 - directories.totalSize
+    val minimalFreeUp = 30000000 - unused
+    return directories.totalSizes.filter { it >= minimalFreeUp }.min()
+}
 
 private val root = listOf("/")
 
@@ -77,4 +84,5 @@ const val filename = "Day07"
 
 fun main() {
     println(part1(filename))
+    println(part2(filename))
 }
