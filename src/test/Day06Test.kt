@@ -15,4 +15,16 @@ class Day06Test {
     fun part1(input: String, result: Int) {
         assertEquals(result, part1(input))
     }
+
+    @ParameterizedTest
+    @CsvSource(
+        "mjqjpqmgbljsphdztnvjfqwrcgsmlb,    19",
+        "bvwbjplbgvbhsrlpgdmjqwftvncz,      23",
+        "nppdvjthqldpwncqszvftbrmjlhg,      23",
+        "nznrnfrfntjfmvfwmzdfjlvtqnbhcprsg, 29",
+        "zcfzfwzzqfrljwzlrfnpqdbhtmscgvjw,  26",
+    )
+    fun part2(input: String, result: Int) {
+        assertEquals(result, part2(input))
+    }
 }
