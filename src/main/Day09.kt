@@ -63,17 +63,19 @@ fun String.readMoves() =
     } to substring(2).toInt()
 
 fun part1(filename: String): Int {
-    val moves = readInput(filename).map(String::readMoves)
     val tailPositions = mutableSetOf<Position>()
     var rope = Rope()
-    for ((direction, count) in moves) {
-        repeat(count) {
-            rope = rope.move(direction)
-            tailPositions.add(rope.tail)
-        }
+    for (direction in readMoves(filename)) {
+        rope = rope.move(direction)
+        tailPositions.add(rope.tail)
     }
     return tailPositions.size
 }
+
+private fun readMoves(filename: String): List<Direction> =
+    readInput(filename).map(String::readMoves).flatMap { (direction, count) ->
+        generateSequence { direction }.take(count)
+    }
 
 private const val filename = "Day09"
 
