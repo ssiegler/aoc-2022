@@ -34,7 +34,14 @@ class Day09Test {
     @Test
     fun `verify part1 visually`(approver: Approver) {
         approver.assertApproved(
-            readMoves(filename).simulate().joinToString("\n") { it.visualize() }
+            readMoves(filename).simulate(2).joinToString("\n") { it.visualize() }
+        )
+    }
+
+    @Test
+    fun `verify part2 visually`(approver: Approver) {
+        approver.assertApproved(
+            readMoves(filename).simulate(10).joinToString("\n") { it.visualize() }
         )
     }
 }
