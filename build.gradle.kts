@@ -5,6 +5,7 @@ repositories { mavenCentral() }
 dependencies {
     testImplementation(kotlin("test"))
     testImplementation("org.junit.jupiter:junit-jupiter-params")
+    testImplementation("com.oneeyedmen:okeydoke:1.3.3")
 }
 
 tasks {

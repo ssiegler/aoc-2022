@@ -1,27 +1,29 @@
 package day09
 
-import Direction
+import com.oneeyedmen.okeydoke.Approver
+import com.oneeyedmen.okeydoke.junit5.ApprovalsExtension
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.extension.ExtendWith
 import kotlin.test.assertEquals
 
-private fun Rope.print(): String {
-    var result = ""
+private fun Rope.visualize() = buildString {
     for (y in 5 downTo 0) {
         for (x in 0..5) {
-            result +=
+            append(
                 when {
                     head == x to y -> "H"
                     tail == x to y -> "T"
                     else -> "."
                 }
+            )
         }
-        result += "\n"
+        append("\n")
     }
-    return result
 }
 
 private const val filename = "Day09Example"
 
+@ExtendWith(ApprovalsExtension::class)
 class Day09Test {
     @Test
     fun part1() {
@@ -29,18 +31,9 @@ class Day09Test {
     }
 
     @Test
-    fun name() {
-        var rope = Rope()
-        println(rope.print())
-        repeat(4) {
-            rope = rope.move(Direction.Right)
-            println()
-            println(rope.print())
-        }
-        repeat(4) {
-            rope = rope.move(Direction.Up)
-            println()
-            println(rope.print())
-        }
+    fun `verify part1 visually`(approver: Approver) {
+        approver.assertApproved(
+            readMoves(filename).simulate().joinToString("\n") { it.visualize() }
+        )
     }
 }

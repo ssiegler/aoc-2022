@@ -62,20 +62,15 @@ fun String.readMoves() =
         else -> error("Unknown direction ${get(0)}")
     } to substring(2).toInt()
 
-fun part1(filename: String): Int {
-    val tailPositions = mutableSetOf<Position>()
-    var rope = Rope()
-    for (direction in readMoves(filename)) {
-        rope = rope.move(direction)
-        tailPositions.add(rope.tail)
-    }
-    return tailPositions.size
-}
+fun part1(filename: String): Int = readMoves(filename).simulate().map { it.tail }.toSet().size
 
-private fun readMoves(filename: String): List<Direction> =
+internal fun readMoves(filename: String): List<Direction> =
     readInput(filename).map(String::readMoves).flatMap { (direction, count) ->
         generateSequence { direction }.take(count)
     }
+
+internal fun List<Direction>.simulate(): List<Rope> =
+    scan(Rope()) { rope, direction -> rope.move(direction) }
 
 private const val filename = "Day09"
 
