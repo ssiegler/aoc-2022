@@ -1,6 +1,7 @@
 package day08
 
-import day08.Direction.*
+import Direction
+import Direction.*
 import utils.readInput
 import kotlin.math.max
 
@@ -11,13 +12,6 @@ data class Tree(val height: Int) {
 }
 
 fun Grid.tree(row: Int, column: Int) = get(row)[column].toString().toInt().let(::Tree)
-
-enum class Direction {
-    Right,
-    Down,
-    Left,
-    Top,
-}
 
 fun Grid.countVisibleTrees(): Int {
     val visible = mutableMapOf<Pair<Int, Int>, Tree>()
@@ -36,7 +30,7 @@ fun Grid.countVisibleTrees(): Int {
             check(row = i, column = j, direction = Right)
             check(row = j, column = i, direction = Down)
             check(row = i, column = size - 1 - j, direction = Left)
-            check(row = size - 1 - j, column = i, direction = Top)
+            check(row = size - 1 - j, column = i, direction = Up)
         }
     }
     return visible.size
@@ -67,7 +61,7 @@ private fun Grid.findTrees(column: Int, row: Int): (Direction) -> List<Tree> = {
         Right -> (column + 1 until size).map { tree(row, it) }
         Down -> (row + 1 until size).map { tree(it, column) }
         Left -> (column - 1 downTo 0).map { tree(row, it) }
-        Top -> (row - 1 downTo 0).map { tree(it, column) }
+        Up -> (row - 1 downTo 0).map { tree(it, column) }
     }
 }
 
