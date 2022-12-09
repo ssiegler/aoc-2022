@@ -9,11 +9,12 @@ import kotlin.test.assertEquals
 private fun Rope.visualize() = buildString {
     for (y in 5 downTo 0) {
         for (x in 0..5) {
+            val index = knots.indexOf(x to y)
             append(
-                when {
-                    head == x to y -> "H"
-                    tail == x to y -> "T"
-                    else -> "."
+                when (index) {
+                    -1 -> "."
+                    0 -> "H"
+                    else -> "$index"
                 }
             )
         }

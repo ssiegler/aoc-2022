@@ -19,11 +19,11 @@ fun Position.move(direction: Direction): Position =
         Direction.Up -> x to y + 1
     }
 
-data class Rope(val head: Position = 0 to 0, val tail: Position = 0 to 0) {
+data class Rope(val knots: List<Position> = listOf(0 to 0, 0 to 0)) {
     fun move(direction: Direction): Rope {
-        val head = head.move(direction)
-        val tail = tail.follow(head)
-        return Rope(head, tail)
+        val head = knots[0].move(direction)
+        val tail = knots[1].follow(head)
+        return Rope(listOf(head, tail))
     }
 
     private fun Position.follow(head: Position): Position =
@@ -36,19 +36,19 @@ data class Rope(val head: Position = 0 to 0, val tail: Position = 0 to 0) {
             0 to 1,
             1 to -1,
             1 to 0,
-            1 to 1 -> tail
-            2 to 0 -> tail.x + 1 to tail.y
-            -2 to 0 -> tail.x - 1 to tail.y
-            0 to 2 -> tail.x to tail.y + 1
-            0 to -2 -> tail.x to tail.y - 1
-            2 to 1 -> tail.x + 1 to tail.y + 1
-            2 to -1 -> tail.x + 1 to tail.y - 1
-            -2 to 1 -> tail.x - 1 to tail.y + 1
-            -2 to -1 -> tail.x - 1 to tail.y - 1
-            1 to 2 -> tail.x + 1 to tail.y + 1
-            1 to -2 -> tail.x + 1 to tail.y - 1
-            -1 to 2 -> tail.x - 1 to tail.y + 1
-            -1 to -2 -> tail.x - 1 to tail.y - 1
+            1 to 1 -> this
+            2 to 0 -> x + 1 to y
+            -2 to 0 -> x - 1 to y
+            0 to 2 -> x to y + 1
+            0 to -2 -> x to y - 1
+            2 to 1 -> x + 1 to y + 1
+            2 to -1 -> x + 1 to y - 1
+            -2 to 1 -> x - 1 to y + 1
+            -2 to -1 -> x - 1 to y - 1
+            1 to 2 -> x + 1 to y + 1
+            1 to -2 -> x + 1 to y - 1
+            -1 to 2 -> x - 1 to y + 1
+            -1 to -2 -> x - 1 to y - 1
             else -> error("Broken rope $this")
         }
 }
@@ -62,7 +62,8 @@ fun String.readMoves() =
         else -> error("Unknown direction ${get(0)}")
     } to substring(2).toInt()
 
-fun part1(filename: String): Int = readMoves(filename).simulate().map { it.tail }.toSet().size
+fun part1(filename: String): Int =
+    readMoves(filename).simulate().map { it.knots.last() }.toSet().size
 
 internal fun readMoves(filename: String): List<Direction> =
     readInput(filename).map(String::readMoves).flatMap { (direction, count) ->
