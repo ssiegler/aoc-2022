@@ -55,6 +55,27 @@ class Day10Test {
 
     @Test
     fun part1() {
-        assertEquals(13140, day10.part1(filename))
+        assertEquals(13140, part1(filename))
+    }
+
+    @Test
+    fun `renders first 21 chars`() {
+        assertEquals("##..##..##..##..##..#", largerExampleProgram.render().take(21))
+    }
+
+    @Test
+    fun part2() {
+        assertEquals(
+            """
+            ##..##..##..##..##..##..##..##..##..##..
+            ###...###...###...###...###...###...###.
+            ####....####....####....####....####....
+            #####.....#####.....#####.....#####.....
+            ######......######......######......####
+            #######.......#######.......#######.....
+        """
+                .trimIndent(),
+            part2(filename)
+        )
     }
 }

@@ -11,7 +11,7 @@ fun part1(filename: String): Int =
         .filterIndexed { index, _ -> index in 20..220 step 40 }
         .sum()
 
-fun part2(filename: String): String = TODO()
+fun part2(filename: String): String = readInput(filename).readProgram().render()
 
 fun main() {
     println(part1(filename))
@@ -51,3 +51,17 @@ fun List<String>.readProgram(): Program = map { line ->
         else -> error("Unknown instruction: $line")
     }
 }
+
+fun Program.render(): String {
+    val output = (1..6).map { CharArray(40) }
+    Cpu().execute(this).asSequence().drop(1).take(240).withIndex().chunked(40).chunked(6).forEach {
+        it.withIndex().forEach { (row, values) ->
+            values.withIndex().forEach { (position, value) ->
+                output[row][position] = pixel(position, value.value)
+            }
+        }
+    }
+    return output.joinToString("\n") { it.concatToString() }
+}
+
+fun pixel(position: Int, value: Int): Char = if (position in value - 1..value + 1) '#' else '.'
