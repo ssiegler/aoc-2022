@@ -13,13 +13,13 @@ val ThrowItem.target
 class Monkey(
     private var items: List<Long>,
     private val operation: Long.() -> Long,
-    private val test: Long.() -> Boolean,
+    val divisor: Long,
     private val whenTrue: Int,
     private val whenFalse: Int,
 ) {
-    private var inspections: Int = 0
+    private var inspections: Long = 0
 
-    val totalInspections: Int
+    val totalInspections: Long
         get() = inspections
 
     val currentItems: List<Long>
@@ -29,13 +29,14 @@ class Monkey(
         items = items + caught
     }
 
-    fun onTurn(): List<ThrowItem> = items.map { it.inspect() }.also { items = emptyList() }
+    fun onTurn(relief: Boolean): List<ThrowItem> =
+        items.map { it.inspect(relief) }.also { items = emptyList() }
 
-    private fun Long.inspect(): ThrowItem {
+    private fun Long.inspect(relief: Boolean): ThrowItem {
         inspections++
-        val worryLevel = operation().div(3)
+        val worryLevel = operation().let { if (relief) it.div(3) else it }
         return worryLevel to
-            if (worryLevel.test()) {
+            if (worryLevel % divisor == 0L) {
                 whenTrue
             } else {
                 whenFalse
@@ -45,14 +46,27 @@ class Monkey(
 
 fun List<Monkey>.turn() {
     forEach {
-        it.onTurn().groupBy(ThrowItem::target, ThrowItem::item).forEach { (target, items) ->
+        it.onTurn(relief = true).groupBy(ThrowItem::target, ThrowItem::item).forEach {
+            (target, items) ->
             get(target).catch(items)
         }
     }
 }
 
-fun List<Monkey>.businessLevel(): Int =
-    map { it.totalInspections }.sortedDescending().take(2).reduce(Int::times)
+fun List<Monkey>.turnsWithoutRelief(n: Int) {
+    val commonDivisor = map { it.divisor }.reduce(Long::times)
+    repeat(n) {
+        forEach {
+            it.onTurn(relief = false).groupBy(ThrowItem::target, ThrowItem::item).forEach {
+                (target, items) ->
+                get(target).catch(items.map { item -> item % commonDivisor })
+            }
+        }
+    }
+}
+
+fun List<Monkey>.businessLevel(): Long =
+    map { it.totalInspections }.sortedDescending().take(2).reduce(Long::times)
 
 fun List<String>.readMonkeys(): List<Monkey> = chunked(7).map(List<String>::readMonkey)
 
@@ -60,7 +74,7 @@ private fun List<String>.readMonkey() =
     Monkey(
         get(1).readItems(),
         get(2).readOperation(),
-        get(3).readTest(),
+        get(3).readDivisor(),
         get(4).readTarget("true"),
         get(5).readTarget("false")
     )
@@ -87,20 +101,26 @@ private fun operation(operand: String, operator: (Long, Long) -> Long): (Long) -
         }
     }
 
-private fun String.readTest(): (Long) -> Boolean =
-    removePrefix("  Test: divisible by ").toLong().let { divisor -> { it % divisor == 0L } }
+private fun String.readDivisor(): Long = removePrefix("  Test: divisible by ").toLong()
 
 private fun String.readTarget(case: String): Int =
     removePrefix("    If $case: throw to monkey ").toInt()
 
 private const val filename = "Day11"
 
-fun part1(filename: String): Int {
+fun part1(filename: String): Long {
     val monkeys = readInput(filename).readMonkeys()
     repeat(20) { monkeys.turn() }
     return monkeys.businessLevel()
 }
 
+fun part2(filename: String): Long {
+    val monkeys = readInput(filename).readMonkeys()
+    monkeys.turnsWithoutRelief(10000)
+    return monkeys.businessLevel()
+}
+
 fun main() {
     println(part1(filename))
+    println(part2(filename))
 }
