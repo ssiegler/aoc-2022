@@ -10,4 +10,9 @@ class Day12Test {
     fun part1() {
         assertEquals(31, part1(filename))
     }
+
+    @Test
+    fun part2() {
+        assertEquals(29, part2(filename))
+    }
 }

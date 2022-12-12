@@ -20,11 +20,20 @@ data class HeightMap(
             .filter { heights[it] != null }
             .filter { heights[it]!! + 1u >= heights[this]!! }
 
-    fun shortestPathLength(): Int {
-        val distances = mutableMapOf(target to 0)
+    fun shortestPathLength(): Int =
+        calculateDistances(target)[start] ?: error("No path to target found")
+
+    fun shortestPathLengthFromAnywhere(): Int =
+        calculateDistances(target)
+            .filter { (position, _) -> heights[position]!! == 0.toUByte() }
+            .minBy { (_, distance) -> distance }
+            .value
+
+    private fun calculateDistances(position: Position): Map<Position, Int> {
+        val distances = mutableMapOf(position to 0)
         val boundary =
             PriorityQueue<Position>(Comparator.comparing { distances[it] ?: Int.MAX_VALUE })
-        boundary.add(target)
+        boundary.add(position)
         while (boundary.isNotEmpty()) {
             val next = boundary.remove()
             val distance = distances[next]!! + 1
@@ -33,8 +42,7 @@ data class HeightMap(
                 boundary.add(neighbor)
             }
         }
-
-        return distances[start] ?: error("No path to target found")
+        return distances
     }
 }
 
@@ -57,8 +65,12 @@ fun List<String>.readHeightMap(): HeightMap {
 
 fun part1(filename: String): Int = readInput(filename).readHeightMap().shortestPathLength()
 
+fun part2(filename: String): Int =
+    readInput(filename).readHeightMap().shortestPathLengthFromAnywhere()
+
 private const val filename = "Day12"
 
 fun main() {
     println(part1(filename))
+    println(part2(filename))
 }
