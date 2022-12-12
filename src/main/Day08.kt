@@ -1,7 +1,7 @@
 package day08
 
-import Direction
-import Direction.*
+import geometry.Direction
+import geometry.Direction.*
 import utils.readInput
 import kotlin.math.max
 
