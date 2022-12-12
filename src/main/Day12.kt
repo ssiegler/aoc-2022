@@ -13,20 +13,18 @@ data class HeightMap(
     private val heights: Map<Position, Height>,
     private val start: Position,
     private val target: Position,
-    private val width: Int,
-    private val height: Int
 ) {
     private fun Position.neighbors(): List<Position> =
         Direction.values()
             .map(::move)
             .filter { heights[it] != null }
-            .filter { heights[it]!! <= heights[this]!! + 1u }
+            .filter { heights[it]!! + 1u >= heights[this]!! }
 
     fun shortestPathLength(): Int {
-        val distances = mutableMapOf(start to 0)
+        val distances = mutableMapOf(target to 0)
         val boundary =
             PriorityQueue<Position>(Comparator.comparing { distances[it] ?: Int.MAX_VALUE })
-        boundary.add(start)
+        boundary.add(target)
         while (boundary.isNotEmpty()) {
             val next = boundary.remove()
             val distance = distances[next]!! + 1
@@ -36,7 +34,7 @@ data class HeightMap(
             }
         }
 
-        return distances[target] ?: error("No path to target found")
+        return distances[start] ?: error("No path to target found")
     }
 }
 
@@ -54,8 +52,6 @@ fun List<String>.readHeightMap(): HeightMap {
         characterPositions.mapValues { (_, value) -> value.toHeight() },
         characterPositions.entries.find { it.value == 'S' }?.key ?: error("start point not found"),
         characterPositions.entries.find { it.value == 'E' }?.key ?: error("end point not found"),
-        maxOf { it.length },
-        size
     )
 }
 
