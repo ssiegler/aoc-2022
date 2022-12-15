@@ -9,19 +9,11 @@ import kotlin.math.absoluteValue
 
 data class Sensor(val position: Position, val beacon: Position) {
     private val radius = beacon.manhattenDistance(position)
-    val left = position.x - radius
-    val right = position.x + radius
-
-    fun detected(other: Position): Boolean {
-        return other != beacon && covers(other)
-    }
 
     fun slice(y: Int): IntRange? {
         val halfWidth = radius - (y - position.y).absoluteValue
         return if (halfWidth >= 0) position.x - halfWidth..position.x + halfWidth else null
     }
-
-    fun covers(other: Position) = other.manhattenDistance(position) <= radius
 }
 
 fun String.toSensor(): Sensor {
@@ -37,12 +29,17 @@ fun String.toSensor(): Sensor {
     return Sensor(xS to yS, xB to yB)
 }
 
-fun List<Sensor>.detected(y: Int): Int =
-    (minOf { it.left }..maxOf { it.right }).count { x -> any { sensor -> sensor.detected(x to y) } }
+fun List<Sensor>.covered(y: Int): Int = (detected(y) - beacons(y)).size
 
-fun part1(filename: String): Int = countDetected(filename, 2000000)
+private fun List<Sensor>.detected(y: Int) =
+    mapNotNull { it.slice(y)?.toSet() }.reduce(Set<Int>::union)
 
-fun countDetected(filename: String, y: Int) = readInput(filename).map(String::toSensor).detected(y)
+private fun List<Sensor>.beacons(y: Int) =
+    map { it.beacon }.filter { it.y == y }.map { it.x }.toSet()
+
+fun part1(filename: String): Int = covered(filename, 2000000)
+
+fun covered(filename: String, y: Int) = readInput(filename).map(String::toSensor).covered(y)
 
 private fun List<Sensor>.findMissingBeacon(range: IntRange): Position? {
     for (y in range) {

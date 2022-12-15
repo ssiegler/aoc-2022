@@ -1,5 +1,5 @@
 import day15.Sensor
-import day15.countDetected
+import day15.covered
 import day15.findMissingBeaconFrequency
 import day15.toSensor
 import org.junit.jupiter.api.Test
@@ -18,7 +18,7 @@ class Day15Test {
 
     @Test
     fun part1() {
-        assertEquals(26, countDetected(filename, 10))
+        assertEquals(26, covered(filename, 10))
     }
 
     @Test
