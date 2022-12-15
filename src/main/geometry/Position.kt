@@ -1,5 +1,7 @@
 package geometry
 
+import kotlin.math.absoluteValue
+
 typealias Position = Pair<Int, Int>
 
 val Position.x
@@ -14,3 +16,6 @@ fun Position.move(direction: Direction): Position =
         Direction.Left -> x - 1 to y
         Direction.Up -> x to y + 1
     }
+
+fun Position.manhattenDistance(other: Position): Int =
+    (x - other.x).absoluteValue + (y - other.y).absoluteValue
