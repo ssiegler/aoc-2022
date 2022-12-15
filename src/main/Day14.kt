@@ -5,11 +5,29 @@ import utils.readInput
 
 private val source: Position = 500 to 0
 
-class Cave(rocks: Set<Position>) {
+class Cave(private val rocks: Set<Position>) {
     private val filled = rocks.toMutableSet()
     private val depth = rocks.maxOf(Position::y)
 
-    fun fill(): Int = generateSequence { drop() }.takeWhile { it == Drop.SETTLES }.count()
+    fun fill(): Int =
+        generateSequence { drop() }.takeWhile { it == Drop.SETTLES && source !in filled }.count() +
+            if (source in filled) 1 else 0
+
+    fun visualize(): String = buildString {
+        for (y in 0..depth) {
+            for (x in -depth..depth) {
+                append(
+                    when (source.x + x to y) {
+                        source -> '+'
+                        in rocks -> '#'
+                        in filled -> 'o'
+                        else -> '.'
+                    }
+                )
+            }
+            append("\n")
+        }
+    }
 
     private enum class Drop {
         SETTLES,
@@ -34,7 +52,9 @@ class Cave(rocks: Set<Position>) {
     }
 }
 
-fun List<String>.readCave(): Cave = map(String::toRocks).reduce(Set<Position>::union).let(::Cave)
+fun List<String>.readCave(): Cave = readRocks().let(::Cave)
+
+fun List<String>.readRocks() = map(String::toRocks).reduce(Set<Position>::union)
 
 fun String.toRocks(): Set<Position> =
     split(" -> ".toRegex())
@@ -65,6 +85,19 @@ fun part1(filename: String): Int {
     return cave.fill()
 }
 
+fun part2(filename: String): Int {
+    val lines = readInput(filename)
+    val cave = lines.readCaveWithFloor()
+    return cave.fill()
+}
+
+fun List<String>.readCaveWithFloor(): Cave {
+    val rocks = readRocks()
+    val depth = rocks.maxOf { it.y } + 2
+    return Cave(rocks + (-depth..depth).map { it + source.x to depth }.toSet())
+}
+
 fun main() {
     println(part1(filename))
+    println(part2(filename))
 }
