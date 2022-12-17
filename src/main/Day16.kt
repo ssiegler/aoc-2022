@@ -47,13 +47,18 @@ data class Valves(
         fun flow(): Int = total + remaining * rate
     }
 
-    fun maximalPressure(): Int {
+    fun maximalPressure(
+        pathValues: MutableMap<Set<String>, Int> = mutableMapOf(),
+        minutes: Int = 30
+    ): Int {
         var maxFlow = 0
         val queue = ArrayDeque<State>()
-        queue.push(State(30, "AA", emptyList(), 0, 0))
+        queue.push(State(minutes, "AA", emptyList(), 0, 0))
         while (queue.isNotEmpty()) {
             val state = queue.pop()
             maxFlow = max(maxFlow, state.flow())
+            pathValues[state.openValves.toSet()] =
+                max(state.flow(), pathValues[state.openValves.toSet()] ?: 0)
             if (state.remaining >= 0) {
                 val rate = flows[state.position]!!
                 if (state.position !in state.openValves && rate > 0) {
@@ -67,21 +72,19 @@ data class Valves(
                         )
                     )
                 } else {
-                    for (destination in flowValves) {
-                        if (destination !in state.openValves) {
-                            val distance = distances[state.position to destination]!!
-                            val remaining = state.remaining - distance
-                            if (remaining > 1) {
-                                queue.push(
-                                    State(
-                                        remaining,
-                                        destination,
-                                        state.openValves,
-                                        state.rate,
-                                        state.total + (state.rate * distance)
-                                    )
+                    for (destination in flowValves - state.openValves.toSet()) {
+                        val distance = distances[state.position to destination]!!
+                        val remaining = state.remaining - distance
+                        if (remaining > 1) {
+                            queue.push(
+                                State(
+                                    remaining,
+                                    destination,
+                                    state.openValves,
+                                    state.rate,
+                                    state.total + (state.rate * distance)
                                 )
-                            }
+                            )
                         }
                     }
                 }
@@ -102,10 +105,26 @@ fun List<String>.readValves(): Valves {
     return Valves(flows, tunnels)
 }
 
-fun part1(filename: String) = readInput(filename).readValves().maximalPressure()
+fun part1(filename: String) = readInput(filename).readValves().maximalPressure(minutes = 30)
+
+fun part2(filename: String): Int {
+    val pathValues = mutableMapOf<Set<String>, Int>()
+    readInput(filename).readValves().maximalPressure(pathValues, 26)
+    return pathValues
+        .asSequence()
+        .flatMap { (path, flow) ->
+            pathValues
+                .asSequence()
+                .drop(1)
+                .filter { it.key.toSet().intersect(path.toSet()).isEmpty() }
+                .map { flow + it.value }
+        }
+        .max()
+}
 
 private const val filename = "Day16"
 
 fun main() {
     println(part1(filename))
+    println(part2(filename))
 }

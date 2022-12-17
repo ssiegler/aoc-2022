@@ -20,4 +20,9 @@ class Day16Test {
     fun part1() {
         assertEquals(1651, day16.part1(filename))
     }
+
+    @Test
+    fun part2() {
+        assertEquals(1707, day16.part2(filename))
+    }
 }
