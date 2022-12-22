@@ -40,4 +40,9 @@ class Day19Test {
         assertEquals(listOf(9, 12), readBlueprints(filename).map { it.maxGeodes(24) })
         assertEquals(33, day19.part1(filename))
     }
+
+    @Test
+    fun part2() {
+        assertEquals(listOf(56, 62), readBlueprints(filename).map { it.maxGeodes(32) })
+    }
 }

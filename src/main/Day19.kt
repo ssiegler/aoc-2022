@@ -123,8 +123,12 @@ data class State(val materials: Map<Material, Int>, val robots: Map<Material, In
 
 fun part1(filename: String) = readBlueprints(filename).sumOf { it.qualityLevel(24) }
 
+fun part2(filename: String) =
+    readBlueprints(filename).take(3).map { it.maxGeodes(32) }.reduce(Int::times)
+
 private const val filename = "Day19"
 
 fun main() {
     println(part1(filename))
+    println(part2(filename))
 }
