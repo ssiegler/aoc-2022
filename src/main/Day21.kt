@@ -1,12 +1,22 @@
 package day21
 
+import day21.Operation.*
 import utils.readInput
 
 sealed interface Job
 
 data class Number(val value: Long) : Job
 
-data class Wait(val left: String, val right: String, val operation: (Long, Long) -> Long) : Job
+data class Wait(val left: String, val right: String, val operation: Operation) : Job
+
+enum class Operation(val operation: (Long, Long) -> Long) {
+    ADD(Long::plus),
+    SUB(Long::minus),
+    MUL(Long::times),
+    DIV(Long::div);
+
+    operator fun invoke(left: Long, right: Long) = operation(left, right)
+}
 
 data class Monkeys(private val jobs: Map<String, Job>) {
     fun yell(name: String): Long =
@@ -34,12 +44,12 @@ private fun String.readJob(): Job {
     }
 }
 
-private fun String.toOperation(): (Long, Long) -> Long =
+private fun String.toOperation(): Operation =
     when (this) {
-        "+" -> Long::plus
-        "-" -> Long::minus
-        "*" -> Long::times
-        "/" -> Long::div
+        "+" -> ADD
+        "-" -> SUB
+        "*" -> MUL
+        "/" -> DIV
         else -> error("Unknown operation $this")
     }
 
